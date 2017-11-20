@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="corner">#FF4081</color>
+    <color name="surrounding_area">#FF4081</color>
+    <color name="border">#FF4081</color>
+    <color name="guideline">#FF4081</color>
+</resources>

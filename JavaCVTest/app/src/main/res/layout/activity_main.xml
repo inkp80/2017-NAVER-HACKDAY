@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.inkp.javacvtest.MainActivity">
+
+    <EditText
+        android:id="@+id/main_et_filepath"
+        android:hint="Enter file name"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <Button
+        android:text="start!"
+        android:id="@+id/main_bt_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/main_tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter file name, click start button" />
+
+</LinearLayout>
