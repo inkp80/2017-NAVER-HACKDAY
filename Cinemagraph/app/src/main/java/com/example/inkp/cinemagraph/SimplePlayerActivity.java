@@ -1,29 +1,28 @@
 package com.example.inkp.cinemagraph;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import static com.example.inkp.cinemagraph.MainActivity.VIDEO_FILE_PATH_KEY;
+import static com.example.inkp.cinemagraph.common.StringKeyValues.VIDEO_FILE_PATH_KEY;
 
 /**
  * Created by macbook on 2017. 11. 18..
  */
 
 public class SimplePlayerActivity extends AppCompatActivity {
+    private static final String TAG = SimplePlayerActivity.class.getSimpleName();
+
     private VideoView videoView;
     private MediaController mediaController;
     private ImageButton btPlay;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -32,23 +31,22 @@ public class SimplePlayerActivity extends AppCompatActivity {
         videoView = (VideoView) findViewById(R.id.vw_video_player);
         mediaController = new MediaController(this);
 
-//        String filePath = Environment.getExternalStorageDirectory() + "/video.mp4";
-//        Toast.makeText(this, filePath, Toast.LENGTH_SHORT).show();
 
         Bundle extras = getIntent().getExtras();
+
         if(extras != null){
             String videoPath = extras.getString(VIDEO_FILE_PATH_KEY);
+
             videoView.setVideoPath(videoPath);
-            mediaController.setMediaPlayer(videoView);
             videoView.setMediaController(mediaController);
             videoView.requestFocus();
 
+            mediaController.setMediaPlayer(videoView);
+
+
             if(savedInstanceState != null){
-                Log.d("gad","asdadaf");
                 videoView.seekTo(savedInstanceState.getInt("currentPos"));
             }
-//            mediaController.show(0);
-//            videoView.start();
         }
 
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -69,25 +67,21 @@ public class SimplePlayerActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Log.d("sada","asda");
-
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            mediaController.show();
+            //mediaController.show();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-//            mediaController.show();
+            //mediaController.show();
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if(videoView.isPlaying()){
-            Log.d("gad","playing");
             outState.putInt("currentPos", videoView.getCurrentPosition());
         }
         super.onSaveInstanceState(outState);

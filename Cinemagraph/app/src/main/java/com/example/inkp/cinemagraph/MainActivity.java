@@ -10,31 +10,40 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+
+import static com.example.inkp.cinemagraph.common.RequestCodes.VIDEO_GALLERY_REQUEST_CODE;
+import static com.example.inkp.cinemagraph.common.StringKeyValues.VIDEO_FILE_PATH_KEY;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String VIDEO_FILE_PATH_KEY = "file_path";
-    private final String TAG = "SIMPLE PLAYER";
+    private final String TAG = MainActivity.class.getSimpleName();
 
-    private final int GALLERY_REQUEST_CODE = 101;
     private Button btSelectVideo;
+    private Button btComposeVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btSelectVideo = (Button) findViewById(R.id.bt_select_video);
+        btSelectVideo = (Button) findViewById(R.id.main_bt_select_video);
         btSelectVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+                startActivityForResult(intent, VIDEO_GALLERY_REQUEST_CODE);
+            }
+        });
+
+        btComposeVideo = (Button) findViewById(R.id.main_bt_compose_video);
+        btComposeVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, VideoComposeActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -45,24 +54,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == GALLERY_REQUEST_CODE) {
+        if (requestCode == VIDEO_GALLERY_REQUEST_CODE) {
+
             Uri selectedImageUri = data.getData();
+
             if (selectedImageUri != null) {
 
                 String[] filePathColumn = {MediaStore.Video.Media.DATA};
+
                 Cursor cursor = getContentResolver().query(
                         selectedImageUri, filePathColumn, null, null, null);
                 cursor.moveToFirst();
+
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String filePath = cursor.getString(columnIndex);
+                String videoPath = cursor.getString(columnIndex);
+
                 cursor.close();
-                Log.d(TAG, "file path : " + filePath);
 
                 Intent intentForSimplePlayer =
                         new Intent(MainActivity.this, SimplePlayerActivity.class);
-                intentForSimplePlayer.putExtra(VIDEO_FILE_PATH_KEY, filePath);
+
+                intentForSimplePlayer.putExtra(VIDEO_FILE_PATH_KEY, videoPath);
                 intentForSimplePlayer.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
                 startActivity(intentForSimplePlayer);
             }
         } else {
@@ -71,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
     }
     private void checkDangerousPermissions() {
         String[] permissions = {
-                Manifest.permission.READ_EXTERNAL_STORAGE
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
         };
 
         int permissionCheck = PackageManager.PERMISSION_GRANTED;
@@ -83,13 +99,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "권한 있음", Toast.LENGTH_LONG).show();
+            // Permission granted.
+
         } else {
-            Toast.makeText(this, "권한 없음", Toast.LENGTH_LONG).show();
+            // Permission denied.
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
-                Toast.makeText(this, "권한 설명 필요함.", Toast.LENGTH_LONG).show();
+                // Should show request permission rationale.
             } else {
+                // Request permission.
                 ActivityCompat.requestPermissions(this, permissions, 1);
             }
         }
@@ -100,9 +118,11 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, permissions[i] + " 권한이 승인됨.", Toast.LENGTH_LONG).show();
+                    // Permission granted.
+
                 } else {
-                    Toast.makeText(this, permissions[i] + " 권한이 승인되지 않음.", Toast.LENGTH_LONG).show();
+                    // Permission denied.
+
                 }
             }
         }

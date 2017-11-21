@@ -23,10 +23,12 @@
             </intent-filter>
         </activity>
 
-        <!--android:configChanges="orientation"-->
         <activity android:name=".SimplePlayerActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity android:name=".VideoComposeActivity">
 
         </activity>
     </application>
